@@ -1,29 +1,42 @@
 version: '3'
 services:
-  webserver:
+  nginx:
     build:
       context: ./containers/nginx
     volumes:
-      - ./containers/nginx/conf.d/default-local.conf:/etc/nginx/conf.d/default.conf
-      - ./spa:/var/www/spa
+      - ../laravel-base:/var/www/html
+      - ./containers/nginx/conf.d/laravel-default.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "80:80"
-      - "443:443"
     depends_on:
-      - api
-      - spa
+      - php
     restart: "no"
 
-  api:
+  php:
     build:
       context: ./containers/php
     environment:
       - APP_ENV=${APP_ENV:-local}
       - DOCUMENT_ROOT=/var/www/html/public
     volumes:
-      - ../api:/var/www/html
+      - ../laravel-base:/var/www/html
+    ports:
+      - "9000:9000"
     working_dir: /var/www/html
-    expose:
-      - 80
     depends_on:
       - db
+
+  mysql:
+    build:
+      context: ./containers/mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: pwd123
+      MYSQL_ROOT_PASSWORD: pwd123
+volumes:
+  db:
