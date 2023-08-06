@@ -38,5 +38,16 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: pwd123
       MYSQL_ROOT_PASSWORD: pwd123
+
+  vite:
+    build:
+      context: ./containers/vite
+    working_dir: /var/www/html
+    volumes:
+      - ../laravel-base:/var/www/html
+    ports:
+      - "3000:3000"
+    tty: true
+
 volumes:
   db:

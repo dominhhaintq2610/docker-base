@@ -9,3 +9,9 @@
 `php artisan key:generate` 
 
 `php artisan migrate`
+
+`docker compose exec vite bash`
+
+`npm install`
+
+`npm run dev`
